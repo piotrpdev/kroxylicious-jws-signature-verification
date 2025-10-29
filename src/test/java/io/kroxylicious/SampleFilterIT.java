@@ -76,29 +76,4 @@ class SampleFilterIT {
                     .isEqualTo("This is bar!");
         }
     }
-
-    @Test
-    void fetchResponseFilter_shouldFindAndReplaceConfiguredWordInConsumedMessages(
-            @BrokerCluster final KafkaCluster kafkaCluster, final Topic topic) {
-        // configure the filters with the proxy
-        final var filterDefinition = new NamedFilterDefinitionBuilder("find-and-replace-consume-filter",
-                SampleFetchResponse.class.getName()).withConfig(FILTER_CONFIGURATION).build();
-        final var proxyConfiguration = KroxyliciousConfigUtils.proxy(kafkaCluster);
-        proxyConfiguration.addToFilterDefinitions(filterDefinition);
-        proxyConfiguration.addToDefaultFilters(filterDefinition.name());
-        // create proxy instance and a producer and a consumer connected to it
-        try (final var tester = KroxyliciousTesters.kroxyliciousTester(proxyConfiguration);
-                final var producer = tester.producer();
-                final var consumer = tester.consumer(Serdes.String(), Serdes.ByteArray(), CONSUMER_CONFIGURATION)) {
-            final ProducerRecord<String, String> producerRecord =
-                    new ProducerRecord<>(topic.name(), "This is foo!");
-            assertThat(producer.send(producerRecord)).succeedsWithin(TIMEOUT);
-            consumer.subscribe(List.of(topic.name()));
-            assertThat(consumer.poll(TIMEOUT).records(topic.name()))
-                    .singleElement()
-                    .extracting(ConsumerRecord::value)
-                    .extracting(String::new)
-                    .isEqualTo("This is bar!");
-        }
-    }
 }

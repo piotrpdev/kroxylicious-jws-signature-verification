@@ -18,11 +18,5 @@ filterDefinitions:
     config:
       findValue: foo
       replacementValue: bar
-  - name: fetch-response-filter
-    type: SampleFetchResponse
-    config:
-      findValue: bar
-      replacementValue: baz
 defaultFilters:
   - produce-request-filter
-  - fetch-response-filter
