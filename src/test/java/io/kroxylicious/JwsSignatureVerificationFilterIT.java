@@ -1,18 +1,13 @@
 package io.kroxylicious;
 
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
-import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.Serdes;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -41,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * </ol>
  */
 @ExtendWith(KafkaClusterExtension.class)
-class SampleFilterIT {
+class JwsSignatureVerificationFilterIT {
 
     private static final Map<String, Object> CONSUMER_CONFIGURATION =
             Map.of(ConsumerConfig.GROUP_ID_CONFIG, "group-id-0",
@@ -57,7 +52,7 @@ class SampleFilterIT {
             @BrokerCluster final KafkaCluster kafkaCluster, final Topic topic) {
         // configure the filters with the proxy
         final var filterDefinition = new NamedFilterDefinitionBuilder("find-and-replace-produce-filter",
-                SampleProduceRequest.class.getName()).withConfig(FILTER_CONFIGURATION).build();
+                JwsSignatureVerification.class.getName()).withConfig(FILTER_CONFIGURATION).build();
         final var proxyConfiguration = KroxyliciousConfigUtils.proxy(kafkaCluster);
         proxyConfiguration.addToFilterDefinitions(filterDefinition);
         proxyConfiguration.addToDefaultFilters(filterDefinition.name());

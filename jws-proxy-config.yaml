@@ -16,6 +16,19 @@ filterDefinitions:
   - name: produce-request-filter
     type: SampleProduceRequest
     config:
+      jwks: >
+        {
+          "keys": [
+            {
+              "kty": "EC",
+              "use": "sig",
+              "kid": "the key",
+              "x": "amuk6RkDZi-48mKrzgBN_zUZ_9qupIwTZHJjM03qL-4",
+              "y": "ZOESj6_dpPiZZR-fJ-XVszQta28Cjgti7JudooQJ0co",
+              "crv": "P-256"
+            }
+          ]
+        }
       findValue: foo
       replacementValue: bar
 defaultFilters:
